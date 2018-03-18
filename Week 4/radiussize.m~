@@ -1,0 +1,6 @@
+function[r, x] = radiussize(rho, delta, delta_max, x_k, p_k)
+    if rho < 1/4
+        r = delta/4;
+    else
+        if rho > 3/4 && abs(norm(p
+end
