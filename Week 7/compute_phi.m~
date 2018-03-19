@@ -1,0 +1,5 @@
+function phi = compute_phi(theta, lambda, rho, mu)
+    pi = theta + lambda/rho;
+    
+    
+end
