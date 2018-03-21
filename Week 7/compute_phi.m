@@ -1,7 +1,8 @@
 function phi = compute_phi(theta, lambda, rho, mu)
     pi = theta + lambda/rho;
-    n = size(theta);
+    n = size(theta, 1);
     cons = mu/rho;
+    phi = zeros(n, 1);
     
     % component-wise computation of phi (with closed formula)
     for i = 1:n
