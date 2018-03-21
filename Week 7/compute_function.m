@@ -1,21 +1,20 @@
 function [F, g, h] = compute_function(theta)
-    % generate dataset (x and y)
-    
+   % generate dataset (x and y)
+   [x, y] = gen_data(50, 20);
     
    [N, M] = size(x);
-   M = M + 1;
    e = length(theta);
    
    % calculate F(theta) for given datset
    F = 0;
    for i = 1:N
-       F = F + log(1 + exp(-y(i) * x(i, :) * theta'));
+       F = F + log(1 + exp(-y(i) * x(i, :) * theta));
    end
    
    % compute gradient of F
    g = zeros(1, e);
    for j = 1:M
-       res = 0
+       res = 0;
        for i = 1:N
             f = x(i, :) * theta;
             a = -y(i)/(exp(y(i) .* f) + 1);

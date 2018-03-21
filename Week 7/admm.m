@@ -1,6 +1,7 @@
 function final_theta = admm(theta0, phi0, lambda0, rho, mu)
     k = 1;
     max_iter = 1e4;
+    tol = 1e-5;
     
     % initialize variable vectors for all iterations
     l = length(theta0);
@@ -11,7 +12,7 @@ function final_theta = admm(theta0, phi0, lambda0, rho, mu)
     phi(:, 1) = phi0;
     lambda(:, 1) = lambda0;
     
-    diff = theta0 - phi0;
+    diff = 1;
     while norm(diff) > tol
         % compute new theta
         theta(:, k + 1) = newton(theta(:, k), phi(:, k), lambda(:, k), rho);
@@ -24,6 +25,8 @@ function final_theta = admm(theta0, phi0, lambda0, rho, mu)
         
         % increase iteration counter
         k = k + 1;
+        
+        diff = theta - phi;
     end
     theta = theta(:, 1:k);
     phi = phi(:, 1:k);
