@@ -21,9 +21,9 @@ function final_theta = admm(theta0, phi0, lambda0, rho, mu, dataset)
     while norm(diff) > tol
         % compute new theta
         %theta(:, k + 1) = newton(theta(:, k), phi(:, k), lambda(:, k), rho, x, y);
-        f_theta = @(t) compute_function(t, x, y) + rho/2 * sum(t - (phi(:, k) - lambda(:, k)/rho)).^2;
+        f_theta = @(t) compute_function(t, x, y) + rho/2 * sum((t - (phi(:, k) - lambda(:, k)/rho)).^2);
+        feval(f_theta, theta(:, k))
         theta(:, k + 1) = fminunc(f_theta, theta(:, k));
-        theta(:, k + 1)
         
         % compute new phi
         phi(:, k + 1) = compute_phi(theta(:, k + 1), lambda(:, k), rho, mu);
@@ -35,6 +35,7 @@ function final_theta = admm(theta0, phi0, lambda0, rho, mu, dataset)
         k
         k = k + 1;
         
+        diff
         diff = theta(:, k) - phi(:, k);
     end
     theta = theta(:, 1:k);
