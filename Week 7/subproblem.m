@@ -20,5 +20,13 @@ function [pn, q, alpha] = subproblem(q0, alpha0, mu0, rho, theta, x, y)
         
         % compute Newton step
         pn = -inv(hess) * grad;
+        
+        % compute q
+        
+        % compute lagrange multiplier alpha
+        
+        % check if p and q are very close
+        
+        % iteration counter
     end
 end
