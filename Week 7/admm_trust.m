@@ -7,6 +7,7 @@ function final_theta = admm_trust()
         % evaluate rho
         
         % calculate new delta and x_k+1 with radius size algorithm
+        [delta_new, x_k] = radiussize(rho, delta, delta_max, x_k, p_k, eta, tol);
         
         % check if converged
 end

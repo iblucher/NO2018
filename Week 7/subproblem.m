@@ -1,7 +1,8 @@
-function [pn, q, alpha] = subproblem(q0, alpha0, mu0, rho, theta, x, y)
+function [pn, qn, alpha] = subproblem(q0, alpha0, mu0, rho, theta, x, y)
     
     % initialize variables
     k = 0;
+    diff = 1;
     
     d = size(q, 1);
     
@@ -26,6 +27,7 @@ function [pn, q, alpha] = subproblem(q0, alpha0, mu0, rho, theta, x, y)
         % compute lagrange multiplier alpha
         
         % check if p and q are very close
+        diff = p - q;
         
         % iteration counter
     end
