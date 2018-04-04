@@ -1,6 +1,7 @@
 function [L, gradL, hessL] = compute_function_trust(theta, x, y, lambda)
     % this function calculates the reparametrized version of the logistic
     % regression
+    one = ones(d + 1);
     
     % separate theta into w+ and w-
     d = size(theta, 1);
@@ -26,8 +27,11 @@ function [L, gradL, hessL] = compute_function_trust(theta, x, y, lambda)
     end
     L = f + lambda * s;
     
-    % compute greadient value
-    
+    % compute gradient value
+    g1 = g + lambda * one;
+    g2 = -g + lambda * one;
+    gradL = [g1; g2];
     
     % compute hessian value
+    hessL = [h, -h; -h, h];
 end

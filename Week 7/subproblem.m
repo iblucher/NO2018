@@ -1,34 +1,60 @@
-function [pn, qn, alpha] = subproblem(q0, alpha0, mu0, rho, theta, x, y)
+function [pn, qn, alphan] = subproblem(q0, alpha0, mu, delta, theta, x, y, lambda)
     
     % initialize variables
-    k = 0;
-    diff = 1;
+    tol = 1e-6;
+    max_iter = 1e4;
     
-    d = size(q, 1);
+    k = 1;
+    diff = 1;
+    d = size(theta, 1);
+    p = nan(2*d, max_iter);
+    q = nan(2*d, max_iter);
+    q(:, 1) = q0;
+    alpha = nan(2*d, max_iter);
+    alpha(:, 1) = alpha0;
     
     while diff > tol && k < max_iter
-        [f, g, B] = compute_function(theta, x, y);
+        [~, g, B] = compute_function_trust(theta, x, y, lambda);
         
-        grad = zeros(d);
-        for i = 1:d
-            grad(i) = g' + B * p(i) + rho * (p(i) - q(i)) - alpha(i);
-        end
+        grad = g' + B * p(:, k) + mu * (p(:, k) - q(:, k)) - alpha(:, k);
         
-        hess = zeros(d, d);
-        for i = 1:d
-            hess(i, i) = B + rho;
+        hess = zeros(2*d, 2*d);
+        for i = 1:2*d
+            hess(i, i) = B(i, i) + mu;
         end
         
         % compute Newton step
-        pn = -inv(hess) * grad;
+        p(:, k + 1) = p(:, k) - hess \ grad;
         
         % compute q
+        for i = 1:2*d
+            q(i, k + 1) = p(i, k + 1) - alpha(i, k)/mu;
+            m = max(-delta, theta(i));
+            if q(i, k + 1) < m
+                q(i, k + 1) = m;
+            elseif q(i, k + 1) > delta
+                q(i, k + 1) = delta;
+            end
+        end
         
         % compute lagrange multiplier alpha
+        for i = 1:2*d
+            alpha(i, k + 1) = alpha(i, k) - mu * (p(i, k + 1) - q(i, k + 1));
+        end
         
         % check if p and q are very close
-        diff = p - q;
+        diff = p(:, k + 1) - q(:, k + 1);
         
         % iteration counter
+        k = k + 1;
     end
+    
+    p = p(:, 1:k);
+    q = q(:, 1:k);
+    alpha = alpha(:, 1:k);
+    
+    pn = p(:, end);
+    qn = q(:, end);
+    alphan = alpha(:, end);
+    
 end
