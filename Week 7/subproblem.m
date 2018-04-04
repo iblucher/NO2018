@@ -7,16 +7,16 @@ function [pn, qn, alphan] = subproblem(q0, alpha0, mu, delta, theta, x, y, lambd
     k = 1;
     diff = 1;
     d = size(theta, 1);
-    p = nan(2*d, max_iter);
-    q = nan(2*d, max_iter);
+    p = zeros(2*d, max_iter);
+    q = zeros(2*d, max_iter);
     q(:, 1) = q0;
-    alpha = nan(2*d, max_iter);
+    alpha = zeros(2*d, max_iter);
     alpha(:, 1) = alpha0;
     
     while diff > tol && k < max_iter
         [~, g, B] = compute_function_trust(theta, x, y, lambda);
         
-        grad = g' + B * p(:, k) + mu * (p(:, k) - q(:, k)) - alpha(:, k);
+        grad = g + B * p(:, k) + mu * (p(:, k) - q(:, k)) - alpha(:, k);
         
         hess = zeros(2*d, 2*d);
         for i = 1:2*d

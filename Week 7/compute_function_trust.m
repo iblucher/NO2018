@@ -1,10 +1,10 @@
 function [L, gradL, hessL] = compute_function_trust(theta, x, y, lambda)
     % this function calculates the reparametrized version of the logistic
     % regression
-    one = ones(d + 1);
+    d = size(theta, 1);
+    one = ones(d, 1);
     
     % separate theta into w+ and w-
-    d = size(theta, 1);
     wplus = nan(d);
     wminus = nan(d);
     for i = 1:d

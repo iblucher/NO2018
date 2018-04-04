@@ -1,5 +1,7 @@
 function final_theta = admm_trust(q0, alpha0, theta0, mu, delta_max, lambda)
 
+    [x, y] = gen_data(10, 20);
+
     % initialize variables
     tol = 1e-6;
     max_iter = 1e4;
@@ -8,7 +10,8 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta_max, lambda)
     delta = nan(max_iter);
     theta = nan(size(x, 2), 1);
     theta(:, k) = theta0;
-     
+    
+    gx = 1; 
     
     while norm(gx) > tol && k < max_iter
         % obtain pk from admm method
@@ -35,4 +38,7 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta_max, lambda)
         k = k + 1;
         
     end
+    
+    theta = theta(:, 1:k);
+    final_theta = theta(:, end);
 end
