@@ -13,23 +13,23 @@ function [pn, qn, alphan] = subproblem(q0, alpha0, mu, delta, theta, x, y, lambd
     alpha = zeros(2*d, max_iter);
     alpha(:, 1) = alpha0;
     
-    while diff > tol && k < max_iter
+    while norm(diff) > tol && k < max_iter
         [~, g, B] = compute_function_trust(theta, x, y, lambda);
         
         grad = g + B * p(:, k) + mu * (p(:, k) - q(:, k)) - alpha(:, k);
         
-        hess = zeros(2*d, 2*d);
-        for i = 1:2*d
-            hess(i, i) = B(i, i) + mu;
-        end
+        b = size(B, 1);
+        hess = B + eye(b) * mu;
         
         % compute Newton step
         p(:, k + 1) = p(:, k) - hess \ grad;
         
         % compute q
+        [wp, wm] = reparam(theta);
+        new_theta = [wp; wm];
         for i = 1:2*d
             q(i, k + 1) = p(i, k + 1) - alpha(i, k)/mu;
-            m = max(-delta, theta(i));
+            m = max(-delta, new_theta(i));
             if q(i, k + 1) < m
                 q(i, k + 1) = m;
             elseif q(i, k + 1) > delta

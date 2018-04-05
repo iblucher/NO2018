@@ -5,17 +5,7 @@ function [L, gradL, hessL] = compute_function_trust(theta, x, y, lambda)
     one = ones(d, 1);
     
     % separate theta into w+ and w-
-    wplus = nan(d);
-    wminus = nan(d);
-    for i = 1:d
-        if theta(i) >= 0
-            wplus(i)= theta(i);
-            wminus(i) = 0;
-        elseif theta(i) < 0
-            wminus = abs(theta(i));
-            wplus(i) = 0;
-        end
-    end
+    [wplus, wminus] = reparam(theta);
     
     % call logistic regression function
     [f, g, h] = compute_function(theta, x, y);
