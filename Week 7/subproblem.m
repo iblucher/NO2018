@@ -8,6 +8,7 @@ function [pn, qn, alphan] = subproblem(q0, alpha0, mu, delta, theta, x, y, lambd
     diff = 1;
     d = size(theta, 1);
     p = zeros(2*d, max_iter);
+    p(:, 1) = ones(2*d, 1);
     q = zeros(2*d, max_iter);
     q(:, 1) = q0;
     alpha = zeros(2*d, max_iter);
@@ -46,6 +47,8 @@ function [pn, qn, alphan] = subproblem(q0, alpha0, mu, delta, theta, x, y, lambd
         diff = p(:, k + 1) - q(:, k + 1);
         
         % iteration counter
+        k
+        norm(diff)
         k = k + 1;
     end
     

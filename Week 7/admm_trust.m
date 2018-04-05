@@ -1,6 +1,6 @@
-function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lambda)
+function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lambda, x, y)
 
-    [x, y] = gen_data(10, 20);
+    %[x, y] = gen_data(10, 20);
 
     % initialize variables
     tol = 1e-6;
@@ -14,9 +14,11 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
     theta = nan(d, max_iter);
     theta(:, k) = theta0;
     
-    p = 1; 
+    qvalues = nan(2*d, max_iter);
+    qvalues(:, 1) = zeros(2*d, 1);
+    dif = 1; 
     
-    while norm(p) > tol && k < max_iter
+    while norm(dif) > tol && k < max_iter
         % obtain pk from admm method
         [p, q, alpha] = subproblem(q0, alpha0, mu, delta(k), theta(:, k), x, y, lambda);
         
@@ -42,12 +44,16 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
         rho = (fx - fp) / (m0 - mk);
         
         % calculate new delta and x_k+1 with radius size algorithm
-        [delta(k + 1), t] = radiussize(rho, delta(k), delta_max, t, p, eta, tol);
+        [delta(k + 1), t] = radiussize(rho, delta(k), delta_max, t, q, eta, tol);
         theta(:, k + 1) = shrink(t);
+        
+        
+   
         
         % iteration counter
         k = k + 1;
-        
+        qvalues(:, k) = q;
+        dif = qvalues(:, k) - qvalues(:, k-1);
         
     end
     
