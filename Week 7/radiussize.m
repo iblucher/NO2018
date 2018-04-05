@@ -10,8 +10,6 @@ function[r, x] = radiussize(rho, delta, delta_max, x_k, p_k, eta, tol)
     end
     
     if rho > eta
-        size(x_k)
-        size(p_k)
         x = x_k + p_k;
     else
         x = x_k;

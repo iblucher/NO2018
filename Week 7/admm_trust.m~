@@ -20,13 +20,15 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
         % obtain pk from admm method
         [p, q, alpha] = subproblem(q0, alpha0, mu, delta(k), theta(:, k), x, y, lambda);
         
-        theta(:, k + 1) = 
-        
         % evaluate rho
         [fx, gx, hx] = compute_function_trust(theta(:, k), x, y, lambda);
+        
+        % reparameterize current theta
         [w1, w2] = reparam(theta(:, k));
         t = [w1; w2];
-        v = shrink(t + p);
+        v = shrink(t + q);
+        
+        % calculate rho elements
         fp = compute_function_trust(v, x, y, lambda);
         m0 = 0;
         mk = 0;
@@ -37,15 +39,17 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
         m0 = fx + m0;
         mk = fx + gx' * p + 0.5 * p' * hx * p + mk;
         
+        fp
+        
         rho = (fx - fp) / (m0 - mk);
         
         % calculate new delta and x_k+1 with radius size algorithm
-        [delta(k + 1), theta(:, k + 1)] = radiussize(rho, delta(k), delta_max, theta(:, k), p, eta, tol);
+        [delta(k + 1), t] = radiussize(rho, delta(k), delta_max, t, p, eta, tol);
+        theta(:, k + 1) = shrink(t);
         
         % iteration counter
         k = k + 1;
         
-        norm(gx)
         k
         
     end

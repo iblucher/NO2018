@@ -14,9 +14,9 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
     theta = nan(d, max_iter);
     theta(:, k) = theta0;
     
-    gx = 1; 
+    p = 1; 
     
-    while norm(gx) > tol && k < max_iter
+    while norm(p) > tol && k < max_iter
         % obtain pk from admm method
         [p, q, alpha] = subproblem(q0, alpha0, mu, delta(k), theta(:, k), x, y, lambda);
         
@@ -48,8 +48,6 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
         % iteration counter
         k = k + 1;
         
-        k
-        norm(gx)
         
     end
     
