@@ -1,4 +1,4 @@
-function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x, y, lambda)
+function [pn, qn, alphan] = subproblem(q0, alpha0, mu, delta, theta, x, y, lambda)
     
     % initialize variables
     tol = 1e-6;
@@ -14,7 +14,7 @@ function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x,
     alpha = zeros(2*d, max_iter);
     alpha(:, 1) = alpha0;
     
-    dist = zeros(max_iter, 1);
+    dist = nan(max_iter);
     
     while norm(diff) > tol && k < max_iter
         [~, g, B] = compute_function_trust(theta, x, y, lambda);
@@ -31,7 +31,7 @@ function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x,
         [wp, wm] = reparam(theta);
         new_theta = [wp; wm];
         for i = 1:2*d
-            q(i, k + 1) = p(i, k + 1) - alsspha(i, k)/mu;
+            q(i, k + 1) = p(i, k + 1) - alpha(i, k)/mu;
             m = max(-delta, new_theta(i));
             if q(i, k + 1) < m
                 q(i, k + 1) = m;
@@ -47,8 +47,7 @@ function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x,
         
         % check if p and q are very close
         diff = p(:, k + 1) - q(:, k + 1);
-        norm(diff)
-        dist(k) = norm(diff);
+        dist(k) = diff;
         
         % iteration counter
         k = k + 1;
@@ -57,7 +56,7 @@ function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x,
     p = p(:, 1:k);
     q = q(:, 1:k);
     alpha = alpha(:, 1:k);
-    dist = dist(1:k, 1);
+    dist = di
     
     pn = p(:, end);
     qn = q(:, end);

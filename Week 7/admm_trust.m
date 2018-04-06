@@ -1,4 +1,4 @@
-function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lambda, x, y)
+function [final_theta, dist, max] = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lambda, x, y)
 
     %[x, y] = gen_data(10, 20);
 
@@ -18,9 +18,19 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
     qvalues(:, 1) = zeros(2*d, 1);
     dif = 1; 
     
+    dist = zeros(max_iter, max_iter);
+    
+    max = -1;
+    
     while norm(dif) > tol && k < max_iter
         % obtain pk from admm method
-        [p, q, alpha] = subproblem(q0, alpha0, mu, delta(k), theta(:, k), x, y, lambda);
+        [p, q, alpha, di, m] = subproblem(q0, alpha0, mu, delta(k), theta(:, k), x, y, lambda);
+        di = [di; zeros(1e4 - m, 1)];
+        dist(:, k) = di;
+        if (max < m)
+            max = m;
+        end
+        max
         
         % evaluate rho
         [fx, gx, hx] = compute_function_trust(theta(:, k), x, y, lambda);
@@ -49,6 +59,7 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
         
         
         % iteration counter
+        disp('solver it')
         k
         norm(dif)
         
@@ -57,7 +68,8 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
         dif = qvalues(:, k) - qvalues(:, k-1);
         
     end
-    
+        
     theta = theta(:, 1:k);
     final_theta = theta(:, end);
+    dist = dist(1:max, 1:k-1);
 end
