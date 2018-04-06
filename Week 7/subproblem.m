@@ -47,8 +47,6 @@ function [pn, qn, alphan] = subproblem(q0, alpha0, mu, delta, theta, x, y, lambd
         diff = p(:, k + 1) - q(:, k + 1);
         
         % iteration counter
-        k
-        norm(diff)
         k = k + 1;
     end
     

@@ -48,9 +48,10 @@ function final_theta = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lam
         theta(:, k + 1) = shrink(t);
         
         
-   
-        
         % iteration counter
+        k
+        norm(dif)
+        
         k = k + 1;
         qvalues(:, k) = q;
         dif = qvalues(:, k) - qvalues(:, k-1);
