@@ -18,7 +18,7 @@ function [final_theta, dist, k] = admm_trust(q0, alpha0, theta0, mu, delta0, del
     qvalues(:, 1) = zeros(2*d, 1);
     dif = 1; 
     
-    dist = zeros(max_iter, max_iter);
+    dist = zeros(max_iter, 1);
     
     max = -1;
     
@@ -58,15 +58,14 @@ function [final_theta, dist, k] = admm_trust(q0, alpha0, theta0, mu, delta0, del
         
         
         % iteration counter
-        k
-        
         k = k + 1;
         qvalues(:, k) = q;
         dif = qvalues(:, k) - qvalues(:, k-1);
+        dist(k, 1) = norm(dif);
         
     end
         
     theta = theta(:, 1:k);
     final_theta = theta(:, end);
-    dist = dist(1:max, 1:k-1);
+    dist = dist(1:k, 1);
 end
