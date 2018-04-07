@@ -50,11 +50,10 @@ function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x,
         
         % check if p and q are very close
         diff = p(:, k + 1) - q(:, k + 1);
-        %norm(diff)
+        norm(diff)
         dist(k) = norm(diff);
         
         new = diff - old_diff;
-        norm(new)
         
         
         % iteration counter

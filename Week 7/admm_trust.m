@@ -1,4 +1,4 @@
-function [final_theta, dist, max] = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lambda, x, y)
+function [final_theta, dist, k] = admm_trust(q0, alpha0, theta0, mu, delta0, delta_max, lambda, x, y)
 
     %[x, y] = gen_data(10, 20);
 
@@ -24,12 +24,12 @@ function [final_theta, dist, max] = admm_trust(q0, alpha0, theta0, mu, delta0, d
     
     while norm(dif) > tol && k < max_iter
         % obtain pk from admm method
-        [p, q, alpha, di, m] = subproblem(q0, alpha0, mu, delta(k), theta(:, k), x, y, lambda);
-        di = [di; zeros(1e4 - m, 1)];
-        dist(:, k) = di;
-        if (max < m)
-            max = m;
-        end
+        [p, q, alpha, ~, ~] = subproblem(q0, alpha0, mu, delta(k), theta(:, k), x, y, lambda);
+        %di = [di; zeros(1e4 - m, 1)];
+        %dist(:, k) = di;
+        %if (max < m)
+            %max = m;
+        %end
         
         % evaluate rho
         [fx, gx, hx] = compute_function_trust(theta(:, k), x, y, lambda);
@@ -58,6 +58,8 @@ function [final_theta, dist, max] = admm_trust(q0, alpha0, theta0, mu, delta0, d
         
         
         % iteration counter
+        k
+        
         k = k + 1;
         qvalues(:, k) = q;
         dif = qvalues(:, k) - qvalues(:, k-1);
