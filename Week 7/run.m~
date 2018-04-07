@@ -1,22 +1,34 @@
-thetas = zeros(21, 100);
-thetas(:, end) = ones(21, 1);
+q0 = zeros(42, 1);
+alpha0 = zeros(42, 1);
+mu = 1;
+delta0 = 1;
+delta_max = 10;
+lambda = 1;
+[x, y] = gen_data(10, 20);
 
-for i = 2:49
-    thetas(:, i) = randn(21, 1);
-end
+[f, dist, iter_num] = admm_trust(q0, alpha0, zeros(21, 1), mu, delta0, delta_max, lambda, x, y);
+m = mean(dist, 2);
+plot(1:iter_num, log(m));
+hold on;
+    
+[f, dist, iter_num] = admm_trust(q0, alpha0, ones(21, 1), mu, delta0, delta_max, lambda, x, y);
+m = mean(dist, 2);
+plot(1:iter_num, log(m));
+hold on;
 
-for i = 1:50
+for i = 2:29
     
     i
     
-    [f, dist, iter_num] = admm_trust(q0, alpha0, thetas(:, i), mu, delta0, delta_max, lambda, x, y);
+    [f, dist, iter_num] = admm_trust(q0, alpha0, max(randn(21 ,1), zeros(21, 1)), mu, delta0, delta_max, lambda, x, y);
 
     m = mean(dist, 2);
 
     plot(1:iter_num, log(m));
     hold on;
     
+    xlabel('Number of iterations');
+    ylabel('Mean 
     
-
 end
 

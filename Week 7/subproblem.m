@@ -3,6 +3,7 @@ function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x,
     % initialize variables
     tol = 1e-6;
     max_iter = 1e4;
+    new = 1;
     
     k = 1;
     diff = 1;
@@ -16,7 +17,7 @@ function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x,
     
     dist = zeros(max_iter, 1);
     
-    while norm(diff) > tol && k < max_iter
+    while norm(diff) > tol && norm(new) ~= 0 && k < max_iter
         [~, g, B] = compute_function_trust(theta, x, y, lambda);
         
         grad = g + B * p(:, k) + mu * (p(:, k) - q(:, k)) - alpha(:, k);
@@ -31,7 +32,7 @@ function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x,
         [wp, wm] = reparam(theta);
         new_theta = [wp; wm];
         for i = 1:2*d
-            q(i, k + 1) = p(i, k + 1) - alsspha(i, k)/mu;
+            q(i, k + 1) = p(i, k + 1) - alpha(i, k)/mu;
             m = max(-delta, new_theta(i));
             if q(i, k + 1) < m
                 q(i, k + 1) = m;
@@ -45,10 +46,16 @@ function [pn, qn, alphan, dist, k] = subproblem(q0, alpha0, mu, delta, theta, x,
             alpha(i, k + 1) = alpha(i, k) - mu * (p(i, k + 1) - q(i, k + 1));
         end
         
+        old_diff = diff;
+        
         % check if p and q are very close
         diff = p(:, k + 1) - q(:, k + 1);
-        norm(diff)
+        %norm(diff)
         dist(k) = norm(diff);
+        
+        new = diff - old_diff;
+        norm(new)
+        
         
         % iteration counter
         k = k + 1;

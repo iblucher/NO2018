@@ -30,7 +30,6 @@ function [final_theta, dist, max] = admm_trust(q0, alpha0, theta0, mu, delta0, d
         if (max < m)
             max = m;
         end
-        max
         
         % evaluate rho
         [fx, gx, hx] = compute_function_trust(theta(:, k), x, y, lambda);
@@ -59,10 +58,6 @@ function [final_theta, dist, max] = admm_trust(q0, alpha0, theta0, mu, delta0, d
         
         
         % iteration counter
-        disp('solver it')
-        k
-        norm(dif)
-        
         k = k + 1;
         qvalues(:, k) = q;
         dif = qvalues(:, k) - qvalues(:, k-1);
