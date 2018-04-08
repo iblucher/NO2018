@@ -1,12 +1,12 @@
-function final_theta = admm(theta0, phi0, lambda0, rho, mu, dataset)
+function [final_theta, dist, k] = admm(theta0, phi0, lambda0, rho, mu, x, y)
     k = 1;
     max_iter = 1e4;
     tol = 1e-6;
     
     % generate dataset (x and y)
-    x = dataset(:, 1:end-1);
-    x = [ones(10, 1) x];
-    y = dataset(:, end);
+    %x = dataset(:, 1:end-1);
+    %x = [ones(10, 1) x];
+    %y = dataset(:, end);
     
     % initialize variable vectors for all iterations
     l = length(theta0);
@@ -16,6 +16,7 @@ function final_theta = admm(theta0, phi0, lambda0, rho, mu, dataset)
     theta(:, 1) = theta0;
     phi(:, 1) = phi0;
     lambda(:, 1) = lambda0;
+    dist = zeros(max_iter, 1);
     
     diff = 1;
     while norm(diff) > tol
@@ -37,10 +38,13 @@ function final_theta = admm(theta0, phi0, lambda0, rho, mu, dataset)
         
         diff
         diff = theta(:, k) - phi(:, k);
+        dist(k, 1) = norm(diff);
     end
     theta = theta(:, 1:k);
     phi = phi(:, 1:k);
     lambda = lambda(:, 1:k);
+    
+    dist = dist(1:k, 1);
     
     final_theta = theta(:, k);
     
