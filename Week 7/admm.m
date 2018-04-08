@@ -1,7 +1,7 @@
 function [final_theta, dist, k] = admm(theta0, phi0, lambda0, rho, mu, x, y)
     k = 1;
     max_iter = 1e4;
-    tol = 1e-6;
+    tol = 1e-5;
     
     % generate dataset (x and y)
     %x = dataset(:, 1:end-1);
@@ -23,7 +23,7 @@ function [final_theta, dist, k] = admm(theta0, phi0, lambda0, rho, mu, x, y)
         % compute new theta
         %theta(:, k + 1) = newton(theta(:, k), phi(:, k), lambda(:, k), rho, x, y);
         f_theta = @(t) compute_function(t, x, y) + rho/2 * sum((t - (phi(:, k) - lambda(:, k)/rho)).^2);
-        feval(f_theta, theta(:, k))
+        feval(f_theta, theta(:, k));
         theta(:, k + 1) = fminunc(f_theta, theta(:, k));
         
         % compute new phi
@@ -36,7 +36,7 @@ function [final_theta, dist, k] = admm(theta0, phi0, lambda0, rho, mu, x, y)
         k
         k = k + 1;
         
-        diff
+        norm(diff)
         diff = theta(:, k) - phi(:, k);
         dist(k, 1) = norm(diff);
     end
